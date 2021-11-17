@@ -90,7 +90,7 @@ int AMQP_CALL amqp_ssl_socket_set_capath(amqp_socket_t *self,
   * \since v0.12.0
   */
  AMQP_EXPORT
- int AMQP_CALL amqp_ssl_socket_set_default_cafile(amqp_socket_t *self);
+ int AMQP_CALL amqp_ssl_socket_set_default_cacert(amqp_socket_t *self);
 
  /**
   * Set the default CA path.
