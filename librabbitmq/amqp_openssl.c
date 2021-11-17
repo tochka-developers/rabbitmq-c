@@ -387,7 +387,7 @@ int amqp_ssl_socket_set_capath(amqp_socket_t *base, const char *capath) {
   return AMQP_STATUS_OK;
 }
 
-int amqp_ssl_socket_set_default_cafile(amqp_socket_t *base) {
+int amqp_ssl_socket_set_default_cacert(amqp_socket_t *base) {
   int status;
   struct amqp_ssl_socket_t *self;
   if (base->klass != &amqp_ssl_socket_class) {
