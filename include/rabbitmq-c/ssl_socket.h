@@ -65,6 +65,47 @@ int AMQP_CALL amqp_ssl_socket_set_cacert(amqp_socket_t *self,
                                          const char *cacert);
 
 /**
+ * Set the CA directory.
+ *
+ * \param [in,out] self An SSL/TLS socket object.
+ * \param [in] capath Path to the CA directory.
+ *
+ * \return \ref AMQP_STATUS_OK on success an \ref amqp_status_enum value on
+ *  failure.
+ *
+ * \since v0.12.0
+ */
+AMQP_EXPORT
+int AMQP_CALL amqp_ssl_socket_set_capath(amqp_socket_t *self,
+                                         const char *capath);
+
+ /**
+  * Set the default CA file.
+  *
+  * \param [in,out] self An SSL/TLS socket object.
+  *
+  * \return \ref AMQP_STATUS_OK on success an \ref amqp_status_enum value on
+  *  failure.
+  *
+  * \since v0.12.0
+  */
+ AMQP_EXPORT
+ int AMQP_CALL amqp_ssl_socket_set_default_cafile(amqp_socket_t *self);
+
+ /**
+  * Set the default CA path.
+  *
+  * \param [in,out] self An SSL/TLS socket object.
+  *
+  * \return \ref AMQP_STATUS_OK on success an \ref amqp_status_enum value on
+  *  failure.
+  *
+  * \since v0.12.0
+  */
+ AMQP_EXPORT
+ int AMQP_CALL amqp_ssl_socket_set_default_capath(amqp_socket_t *self);
+
+/**
  * Set the password of key in PEM format.
  *
  * \param [in,out] self An SSL/TLS socket object.

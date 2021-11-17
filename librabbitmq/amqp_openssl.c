@@ -373,6 +373,48 @@ int amqp_ssl_socket_set_cacert(amqp_socket_t *base, const char *cacert) {
   return AMQP_STATUS_OK;
 }
 
+int amqp_ssl_socket_set_capath(amqp_socket_t *base, const char *capath) {
+  int status;
+  struct amqp_ssl_socket_t *self;
+  if (base->klass != &amqp_ssl_socket_class) {
+    amqp_abort("<%p> is not of type amqp_ssl_socket_t", base);
+  }
+  self = (struct amqp_ssl_socket_t *)base;
+  status = SSL_CTX_load_verify_locations(self->ctx, NULL, capath);
+  if (1 != status) {
+    return AMQP_STATUS_SSL_ERROR;
+  }
+  return AMQP_STATUS_OK;
+}
+
+int amqp_ssl_socket_set_default_cafile(amqp_socket_t *base) {
+  int status;
+  struct amqp_ssl_socket_t *self;
+  if (base->klass != &amqp_ssl_socket_class) {
+    amqp_abort("<%p> is not of type amqp_ssl_socket_t", base);
+  }
+  self = (struct amqp_ssl_socket_t *)base;
+  status = SSL_CTX_set_default_verify_file(self->ctx);
+  if (1 != status) {
+    return AMQP_STATUS_SSL_ERROR;
+  }
+  return AMQP_STATUS_OK;
+}
+
+int amqp_ssl_socket_set_default_capath(amqp_socket_t *base) {
+  int status;
+  struct amqp_ssl_socket_t *self;
+  if (base->klass != &amqp_ssl_socket_class) {
+    amqp_abort("<%p> is not of type amqp_ssl_socket_t", base);
+  }
+  self = (struct amqp_ssl_socket_t *)base;
+  status = SSL_CTX_set_default_verify_dir(self->ctx);
+  if (1 != status) {
+    return AMQP_STATUS_SSL_ERROR;
+  }
+  return AMQP_STATUS_OK;
+}
+
 int amqp_ssl_socket_set_key(amqp_socket_t *base, const char *cert,
                             const char *key) {
   int status;
