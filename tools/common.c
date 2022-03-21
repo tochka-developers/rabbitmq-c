@@ -213,14 +213,18 @@ static void init_connection_info(struct amqp_connection_info *ci) {
       }
 #endif
     }
+  }
 
 #if WITH_SSL
-    if (amqp_ssl && !ci->ssl) {
+  if (amqp_ssl && !ci->ssl) {
+    if (amqp_url) {
       die("the --ssl option specifies an SSL connection"
           " but the --url option does not");
+    } else {
+      ci->ssl = 1;
     }
-#endif
   }
+#endif
 
   if (amqp_port >= 0) {
     if (amqp_url) {
@@ -290,7 +294,7 @@ amqp_connection_state_t make_connection(void) {
   }
   status = amqp_socket_open(socket, ci.host, ci.port);
   if (status) {
-    die("opening socket to %s:%d", ci.host, ci.port);
+    die_amqp_error(status, "opening socket to %s:%d", ci.host, ci.port);
   }
   die_rpc(amqp_login(conn, ci.vhost, 0, 131072, amqp_heartbeat,
                      AMQP_SASL_METHOD_PLAIN, ci.user, ci.password),
