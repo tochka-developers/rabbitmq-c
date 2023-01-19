@@ -1327,6 +1327,17 @@ int AMQP_CALL amqp_send_header(amqp_connection_state_t state);
 AMQP_EXPORT
 amqp_boolean_t AMQP_CALL amqp_frames_enqueued(amqp_connection_state_t state);
 
+AMQP_EXPORT
+int AMQP_CALL amqp_simple_wait_frame_on_channel(amqp_connection_state_t state,
+                                                amqp_channel_t channel,
+                                                amqp_frame_t *decoded_frame);
+
+AMQP_EXPORT
+int AMQP_CALL amqp_simple_wait_frame_on_channel_noblock(amqp_connection_state_t state,
+                                                        amqp_channel_t channel,
+                                                        amqp_frame_t *decoded_frame,
+                                                        const struct timeval *timeout);
+
 /**
  * Read a single amqp_frame_t
  *
