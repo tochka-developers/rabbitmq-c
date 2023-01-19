@@ -958,7 +958,7 @@ static int amqp_simple_wait_method_list(amqp_connection_state_t state,
     return res;
   }
 
-  res = amqp_simple_wait_frame_on_channel_noblock(state, &frame, tvp);
+  res = amqp_simple_wait_frame_on_channel_noblock(state, expected_channel, &frame, tvp);
   if (AMQP_STATUS_OK != res) {
     return res;
   }
