@@ -866,9 +866,22 @@ int amqp_put_back_frame(amqp_connection_state_t state, amqp_frame_t *frame) {
 int amqp_simple_wait_frame_on_channel(amqp_connection_state_t state,
                                       amqp_channel_t channel,
                                       amqp_frame_t *decoded_frame) {
+  return amqp_simple_wait_frame_on_channel_noblock(state, channel, decoded_frame, NULL);
+}
+
+int amqp_simple_wait_frame_on_channel_noblock(amqp_connection_state_t state,
+                                              amqp_channel_t channel,
+                                              amqp_frame_t *decoded_frame,
+                                              const struct timeval *timeout) {
+  amqp_time_t deadline;
+
+  int res = amqp_time_from_now(&deadline, timeout);
+  if (AMQP_STATUS_OK != res) {
+    return res;
+  }
+
   amqp_frame_t *frame_ptr;
   amqp_link_t *cur;
-  int res;
 
   for (cur = state->first_queued_frame; NULL != cur; cur = cur->next) {
     frame_ptr = cur->data;
@@ -885,8 +898,8 @@ int amqp_simple_wait_frame_on_channel(amqp_connection_state_t state,
     }
   }
 
-  for (;;) {
-    res = wait_frame_inner(state, decoded_frame, amqp_time_infinite());
+  do {
+    res = wait_frame_inner(state, decoded_frame, deadline);
 
     if (AMQP_STATUS_OK != res) {
       return res;
@@ -900,7 +913,7 @@ int amqp_simple_wait_frame_on_channel(amqp_connection_state_t state,
         return res;
       }
     }
-  }
+  } while (amqp_time_has_past(deadline) == AMQP_STATUS_OK);
 }
 
 int amqp_simple_wait_frame(amqp_connection_state_t state,
@@ -945,7 +958,7 @@ static int amqp_simple_wait_method_list(amqp_connection_state_t state,
     return res;
   }
 
-  res = amqp_simple_wait_frame_noblock(state, &frame, tvp);
+  res = amqp_simple_wait_frame_on_channel_noblock(state, &frame, tvp);
   if (AMQP_STATUS_OK != res) {
     return res;
   }
