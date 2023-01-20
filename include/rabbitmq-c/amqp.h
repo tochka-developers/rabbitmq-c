@@ -1540,6 +1540,30 @@ int AMQP_CALL amqp_send_method(amqp_connection_state_t state,
                                void *decoded);
 
 /**
+ * Manual send heartbeat if it necessary
+ *
+ * \param [in] state the connection object
+ * \returns AMQP_STATUS_OK on success, an amqp_status_enum value otherwise.
+ *  Possible errors include:
+ *  - AMQP_STATUS_BAD_AMQP_DATA the serialized form of the method or
+ *    properties was too large to fit in a single AMQP frame, or the
+ *    method contains an invalid value. The frame was not sent.
+ *  - AMQP_STATUS_TABLE_TOO_BIG the serialized form of an amqp_table_t is
+ *    too large to fit in a single AMQP frame. Frame was not sent.
+ *  - AMQP_STATUS_UNKNOWN_METHOD an invalid method type was passed in
+ *  - AMQP_STATUS_UNKNOWN_CLASS an invalid properties type was passed in
+ *  - AMQP_STATUS_TIMER_FAILURE system timer indicated failure. The frame
+ *    was sent
+ *  - AMQP_STATUS_SOCKET_ERROR
+ *  - AMQP_STATUS_SSL_ERROR
+ *  - AMQP_STATUS_TIMER_FAILURE
+ *
+ * \since v0.10.0
+ */
+AMQP_EXPORT
+int AMQP_CALL amqp_send_heartbeat(amqp_connection_state_t state);
+
+/**
  * Sends a method to the broker and waits for a method response
  *
  * \param [in] state the connection object

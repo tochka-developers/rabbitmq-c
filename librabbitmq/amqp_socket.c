@@ -1010,6 +1010,24 @@ int amqp_send_method_inner(amqp_connection_state_t state,
   return amqp_send_frame_inner(state, &frame, flags, deadline);
 }
 
+int amqp_send_heartbeat(amqp_connection_state_t state) {
+  res = amqp_time_has_past(state->next_send_heartbeat);
+  if (AMQP_STATUS_TIMER_FAILURE == res) {
+    return res;
+  } else if (AMQP_STATUS_TIMEOUT == res) {
+    amqp_frame_t heartbeat;
+    heartbeat.channel = 0;
+    heartbeat.frame_type = AMQP_FRAME_HEARTBEAT;
+
+    res = amqp_send_frame(state, &heartbeat);
+    if (AMQP_STATUS_OK != res) {
+      return res;
+    }
+  }
+
+  return AMQP_STATUS_OK;
+}
+
 static int amqp_id_in_reply_list(amqp_method_number_t expected,
                                  amqp_method_number_t *list) {
   while (*list != 0) {
