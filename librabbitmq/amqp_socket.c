@@ -1011,6 +1011,8 @@ int amqp_send_method_inner(amqp_connection_state_t state,
 }
 
 int amqp_send_heartbeat(amqp_connection_state_t state) {
+  int res;
+
   res = amqp_time_has_past(state->next_send_heartbeat);
   if (AMQP_STATUS_TIMER_FAILURE == res) {
     return res;
