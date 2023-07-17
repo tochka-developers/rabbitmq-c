@@ -1,7 +1,7 @@
 # Copyright 2007 - 2021, Alan Antonuk and the rabbitmq-c contributors.
 # SPDX-License-Identifier: mit
 
-cmake_minimum_required(VERSION 3.12...3.18)
+cmake_minimum_required(VERSION 3.22...3.26)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -113,7 +113,8 @@ endif()
 option(ENABLE_SSL_SUPPORT "Enable SSL support" ON)
 
 if (ENABLE_SSL_SUPPORT)
-  find_package(OpenSSL 1.1.1 REQUIRED)
+  set(RMQ_OPENSSL_MIN_VERSION 1.1.1)
+  find_package(OpenSSL "${RMQ_OPENSSL_MIN_VERSION}" REQUIRED)
 
   cmake_push_check_state()
   set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -206,8 +207,8 @@ endif()
 
 set(prefix ${CMAKE_INSTALL_PREFIX})
 set(exec_prefix "\${prefix}")
-set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
-set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+cmake_path(APPEND libdir "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
+cmake_path(APPEND includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 
 configure_file(cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/librabbitmq/config.h)
 configure_file(librabbitmq.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librabbitmq.pc @ONLY)
@@ -220,7 +221,7 @@ set(version_config "${CMAKE_CURRENT_BINARY_DIR}/rabbitmq-c-config-version.cmake"
 write_basic_package_version_file(
     "${version_config}"
     VERSION ${RMQ_VERSION}
-    COMPATIBILITY AnyNewerVersion)
+    COMPATIBILITY SameMajorVersion)
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/rabbitmq-c-config.cmake.in"
