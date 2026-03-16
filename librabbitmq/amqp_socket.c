@@ -913,6 +913,8 @@ int amqp_simple_wait_frame_on_channel_noblock(amqp_connection_state_t state,
       }
     }
   } while (amqp_time_has_past(deadline) == AMQP_STATUS_OK);
+
+  return AMQP_STATUS_OK;
 }
 
 int amqp_simple_wait_frame(amqp_connection_state_t state,
